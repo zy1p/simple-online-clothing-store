@@ -31,7 +31,11 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-argument': 'warn',
       "@typescript-eslint/no-misused-promises": ['warn', {
         checksVoidReturn: false,
-      }]
+      }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
     },
   },
 );
