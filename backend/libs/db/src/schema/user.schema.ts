@@ -15,9 +15,12 @@ export const userSchema = z.object({
     .refine((password) => /[0-9]/.test(password), {
       message: 'Password must contain at least one number',
     })
-    .refine((password) => /[!@#$%^&*]/.test(password), {
-      message: 'Password must contain at least one special character',
-    }),
+    .refine(
+      (password) => /[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/.test(password),
+      {
+        message: 'Password must contain at least one special character',
+      },
+    ),
 
   email: z.email({ message: 'Invalid email address' }),
   firstName: z.string().optional(),
