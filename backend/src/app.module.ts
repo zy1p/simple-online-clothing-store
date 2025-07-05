@@ -6,6 +6,10 @@ import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CatchEverythingFilter } from './catch-everything/catch-everything.filter';
+import { UserController } from './user/user.controller';
+import { SaleController } from './sale/sale.controller';
+import { UserService } from './user/user.service';
+import { SaleService } from './sale/sale.service';
 
 @Module({
   imports: [
@@ -23,13 +27,15 @@ import { CatchEverythingFilter } from './catch-everything/catch-everything.filte
     DbModule.forRoot(),
     DbModule.forFeature(User, Sale),
   ],
-  controllers: [AppController],
+  controllers: [AppController, UserController, SaleController],
   providers: [
     AppService,
     {
       provide: APP_FILTER,
       useClass: CatchEverythingFilter,
     },
+    UserService,
+    SaleService,
   ],
 })
 export class AppModule {}
