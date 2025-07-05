@@ -1,14 +1,18 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CreateSaleDto } from './sale.dto';
+import { SaleService } from './sale.service';
 
 @Controller('sales')
 export class SaleController {
+  constructor(private readonly saleService: SaleService) {}
+
   @Post()
-  createSale() {
-    // Handle create sale
+  createSale(@Body() dto: CreateSaleDto, userId: string) {
+    return this.saleService.createSale(userId, dto.products);
   }
 
-  @Get(':id')
-  getSaleById(@Param('id') id: string) {
-    // Handle get sale by ID
+  @Get(':userId')
+  getSaleById(@Param('userId') userId: string) {
+    return this.saleService.getSaleByUserId(userId);
   }
 }

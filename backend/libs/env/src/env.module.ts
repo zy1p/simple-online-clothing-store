@@ -1,6 +1,6 @@
 import { Global, Module, Provider } from '@nestjs/common';
 import { createEnv } from '@t3-oss/env-core';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export const ENV = 'ENV';
 
@@ -10,7 +10,7 @@ const env = createEnv({
     NODE_ENV: z
       .enum(['development', 'production', 'test'])
       .default('development'),
-    MONGODB_URI: z.string().url(),
+    MONGODB_URI: z.url(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

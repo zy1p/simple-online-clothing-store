@@ -19,6 +19,6 @@ export class Sale {
   @prop({ required: true })
   totalPrice: number;
 
-  @prop()
+  @prop({ default: () => new Date() })
   saleDate: Date;
 }
