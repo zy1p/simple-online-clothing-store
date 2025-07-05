@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DbModule, Sale, User } from '@lib/db';
 
 @Module({
   imports: [
@@ -17,6 +18,8 @@ import { AppService } from './app.service';
             : undefined,
       },
     }),
+    DbModule.forRoot(),
+    DbModule.forFeature(User, Sale),
   ],
   controllers: [AppController],
   providers: [AppService],
