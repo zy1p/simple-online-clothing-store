@@ -1,9 +1,11 @@
+import { DbModule, Sale, User } from '@lib/db';
 import { EnvModule } from '@lib/env';
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DbModule, Sale, User } from '@lib/db';
+import { CatchEverythingFilter } from './catch-everything/catch-everything.filter';
 
 @Module({
   imports: [
@@ -22,6 +24,12 @@ import { DbModule, Sale, User } from '@lib/db';
     DbModule.forFeature(User, Sale),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: CatchEverythingFilter,
+    },
+  ],
 })
 export class AppModule {}
