@@ -24,6 +24,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.2.0",
     "@t3-oss/env-core": "^0.13.8",
     "dotenv-cli": "^8.0.0",
     "nestjs-pino": "^4.4.0",
