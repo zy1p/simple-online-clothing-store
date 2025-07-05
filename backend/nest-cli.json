@@ -3,6 +3,37 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true
+  },
+  "defaultLibraryPrefix": "@lib",
+  "projects": {
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "db": {
+      "type": "library",
+      "root": "libs/db",
+      "entryFile": "index",
+      "sourceRoot": "libs/db/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/db/tsconfig.lib.json"
+      }
+    },
+    "env": {
+      "type": "library",
+      "root": "libs/env",
+      "entryFile": "index",
+      "sourceRoot": "libs/env/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/env/tsconfig.lib.json"
+      }
+    }
   }
 }
