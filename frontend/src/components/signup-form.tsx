@@ -15,16 +15,15 @@ import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Loader2Icon } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-export function LoginForm({
+export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { login, isAuthenticated } = useAuthStore();
+  const { login, signup, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -55,23 +54,53 @@ export function LoginForm({
     },
   });
 
+  const signupMutation = useMutation({
+    mutationKey: ["signup"],
+    mutationFn: signup,
+    onMutate: () => {
+      toast.loading("Signing up...", { id: "signup" });
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof AxiosError
+          ? error.response?.data.message
+          : error.message,
+        { id: "signup" },
+      );
+    },
+    onSuccess: (data, variables) => {
+      toast.success("Signed up successfully, logging in...", { id: "signup" });
+      loginMutation.mutate(variables);
+    },
+  });
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Signup to your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your email below to signup for an account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              loginMutation.mutate(new FormData(e.currentTarget));
+              signupMutation.mutate(new FormData(e.currentTarget));
             }}
           >
             <div className="flex flex-col gap-6">
+              <div className="grid gap-3">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  name="email"
+                  id="email"
+                  type="email"
+                  placeholder="zy1p@example.com"
+                  required
+                />
+              </div>
               <div className="grid gap-3">
                 <Label htmlFor="username">Username</Label>
                 <Input
@@ -85,12 +114,6 @@ export function LoginForm({
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
                 </div>
                 <Input name="password" id="password" type="password" required />
               </div>
@@ -102,16 +125,10 @@ export function LoginForm({
                   </Button>
                 ) : (
                   <Button type="submit" className="w-full">
-                    Login
+                    Sign up
                   </Button>
                 )}
               </div>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/signup" className="underline underline-offset-4">
-                Sign up
-              </Link>
             </div>
           </form>
         </CardContent>
