@@ -14,7 +14,9 @@ async function bootstrap() {
   const logger = app.get(Logger);
   app.useLogger(logger);
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api').enableCors({
+    origin: ['http://localhost:3000'],
+  });
 
   const SWAGGER_PATH = 'docs';
   const config = new DocumentBuilder()

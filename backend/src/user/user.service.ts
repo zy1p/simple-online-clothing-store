@@ -1,6 +1,11 @@
 import { User, userSchema } from '@lib/db';
 import { Env, ENV } from '@lib/env';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { compare, hash } from 'bcryptjs';
@@ -39,13 +44,13 @@ export class UserService {
       .select('+password');
 
     if (!user) {
-      throw new Error('User not found');
+      throw new BadRequestException('User not found');
     }
 
     const isPasswordValid = await compare(password, user.password!);
 
     if (!isPasswordValid) {
-      throw new Error('Invalid password');
+      throw new BadRequestException('Invalid password');
     }
 
     const payload = { sub: user.id };
