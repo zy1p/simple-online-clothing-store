@@ -78,16 +78,19 @@ export class UserService {
   }
 
   async updateUser(id: string, data: UpdateUserDto) {
-    const { password, ...rest } = data;
+    // Validate the data against the user schema
+    const { password, ...rest } = userSchema.partial().parse(data);
 
     // Hash the password if it is provided
     const hashedpassword = password ? await hash(password, 10) : undefined;
 
-    return await this.userModel.findByIdAndUpdate(
+    const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       { ...rest, password: hashedpassword },
       { new: true },
     );
+
+    return updatedUser;
   }
 
   async deleteUser(id: string) {
