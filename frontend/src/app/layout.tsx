@@ -1,3 +1,4 @@
+import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
 import "@/styles/globals.css";
 
@@ -28,6 +29,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+
+          <TailwindIndicator />
         </ThemeProvider>
       </body>
     </html>
