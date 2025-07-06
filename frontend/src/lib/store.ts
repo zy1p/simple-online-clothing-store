@@ -1,4 +1,3 @@
-import { jwtDecode } from "jwt-decode";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { api } from "./axios";
@@ -26,17 +25,18 @@ export const useAuthStore = create<AuthStore>()(
         };
 
         const {
-          data: { access_token },
-        } = await api.post<{ access_token: string }>("/users/login", dto);
-
-        const decoded = jwtDecode<{ sub: string; iat: number; exp: number }>(
-          access_token,
-        );
+          data: { access_token, sub, exp },
+        } = await api.post<{
+          access_token: string;
+          sub: string;
+          iat: number;
+          exp: number;
+        }>("/users/login", dto);
 
         set({
           access_token,
-          sub: decoded.sub,
-          exp: decoded.exp,
+          sub,
+          exp,
         });
       },
       getAccessToken: () => {

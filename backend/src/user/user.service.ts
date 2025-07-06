@@ -55,8 +55,13 @@ export class UserService {
 
     const payload = { sub: user.id };
     const access_token = await this.jwtService.signAsync(payload);
+    const decoded = await this.jwtService.verifyAsync<{
+      sub: string;
+      exp: number;
+      iat: number;
+    }>(access_token);
 
-    return { access_token };
+    return { access_token, ...decoded };
   }
 
   async createUser(data: CreateUserDto) {
