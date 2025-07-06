@@ -1,3 +1,4 @@
+import { User } from '@lib/db';
 import {
   Body,
   Controller,
@@ -6,9 +7,12 @@ import {
   Param,
   Post,
   Put,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth';
+import { CurrentUser } from './user.decorator';
 import {
   CreateUserDto,
   LoginDto,
@@ -16,7 +20,6 @@ import {
   UpdateUserDto,
 } from './user.dto';
 import { UserService } from './user.service';
-import { AuthGuard } from 'src/auth';
 
 @Controller('users')
 export class UserController {
@@ -37,22 +40,45 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
+  @Get('me')
+  getCurrentUser(@CurrentUser() user: User) {
+    return user;
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Get(':id')
-  getUserById(@Param('id') id: string) {
+  getUserById(@Param('id') id: string, @CurrentUser() user: User) {
+    // TODO: Replace with a more robust authorization check
+    if (user.username !== 'zy1p' && user.id !== id)
+      throw new UnauthorizedException();
+
     return this.userService.getUserById(id);
   }
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+  updateUser(
+    @Param('id') id: string,
+    @Body() dto: UpdateUserDto,
+    @CurrentUser() user: User,
+  ) {
+    // TODO: Replace with a more robust authorization check
+    if (user.username !== 'zy1p' && user.id !== id)
+      throw new UnauthorizedException();
+
     return this.userService.updateUser(id, dto);
   }
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {
+  deleteUser(@Param('id') id: string, @CurrentUser() user: User) {
+    // TODO: Replace with a more robust authorization check
+    if (user.username !== 'zy1p' && user.id !== id)
+      throw new UnauthorizedException();
+
     return this.userService.deleteUser(id);
   }
 }
