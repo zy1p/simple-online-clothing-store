@@ -24,8 +24,9 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(SWAGGER_PATH, app, documentFactory, {
     swaggerOptions: {
+      // @see https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/#parameters
       persistAuthorization: true,
-      // docExpansion: 'none'
+      defaultModelsExpandDepth: 3,
     },
   });
 

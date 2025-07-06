@@ -1,15 +1,14 @@
 import { DbModule, Sale, User } from '@lib/db';
-import { EnvModule } from '@lib/env';
+import { Env, ENV, EnvModule } from '@lib/env';
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CatchEverythingFilter } from './catch-everything/catch-everything.filter';
-import { UserController } from './user/user.controller';
-import { SaleController } from './sale/sale.controller';
-import { UserService } from './user/user.service';
-import { SaleService } from './sale/sale.service';
+import { CatchEverythingFilter } from './catch-everything';
+import { SaleController, SaleService } from './sale';
+import { UserController, UserService } from './user';
 
 @Module({
   imports: [
@@ -26,6 +25,13 @@ import { SaleService } from './sale/sale.service';
     }),
     DbModule.forRoot(),
     DbModule.forFeature(User, Sale),
+    JwtModule.registerAsync({
+      inject: [ENV],
+      useFactory: (env: Env) => ({
+        secret: env.JWT_SECRET,
+        signOptions: { expiresIn: '1d' },
+      }),
+    }),
   ],
   controllers: [AppController, UserController, SaleController],
   providers: [
