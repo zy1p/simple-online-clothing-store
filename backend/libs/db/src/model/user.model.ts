@@ -22,7 +22,7 @@ export class User extends TimeStamps implements Base {
     required: true,
     select: false, // Exclude password from queries by default
   })
-  password: string;
+  password?: string;
 
   @prop({
     required: true,
