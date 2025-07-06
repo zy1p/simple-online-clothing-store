@@ -14,6 +14,8 @@ async function bootstrap() {
   const logger = app.get(Logger);
   app.useLogger(logger);
 
+  app.setGlobalPrefix('api');
+
   const SWAGGER_PATH = 'docs';
   const config = new DocumentBuilder()
     .addBearerAuth()
