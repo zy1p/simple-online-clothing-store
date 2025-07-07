@@ -1,7 +1,7 @@
 import { env } from "@/env";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
-import { useAuthStore } from "./store";
+import { useAuthStore } from "../hooks/use-auth-store";
 
 export const api = axios.create({
   baseURL: env.NEXT_PUBLIC_API_BASE_URL,
