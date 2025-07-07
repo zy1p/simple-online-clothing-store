@@ -66,3 +66,11 @@ pnpm run start
 # add ui components
 pnpm dlx shadcn@latest add
 ```
+
+### Improvements
+
+- [ ] implement authorization, remove backend hardcoded authorization
+- [ ] add CI/CD pipeline for backend and frontend
+- [ ] dockerize backend and frontend
+- [ ] add tests
+- [ ] move to monorepo structure
