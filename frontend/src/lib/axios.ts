@@ -1,12 +1,19 @@
 import { env } from "@/env";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
+import { useAuthStore } from "./store";
 
 export const api = axios.create({
   baseURL: env.NEXT_PUBLIC_API_BASE_URL,
   timeout: 1000,
   headers: {
     "Content-Type": "application/json",
+    Authorization:
+      typeof window === "undefined"
+        ? undefined
+        : useAuthStore.getState().isAuthenticated()
+          ? `Bearer ${useAuthStore.getState().access_token}`
+          : undefined,
   },
 });
 
@@ -34,9 +41,10 @@ api.interceptors.response.use(
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    error instanceof AxiosError &&
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 401) useAuthStore.getState().clear();
       toast.error(error.message, { id: "response" });
-
+    }
     return Promise.reject(error);
   },
 );
