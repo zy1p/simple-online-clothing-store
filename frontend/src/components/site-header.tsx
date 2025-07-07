@@ -11,15 +11,7 @@ export default function SiteHeader() {
         <nav>
           <ul className="hidden flex-row gap-4 md:flex">
             <li>
-              <Link href="/product">Product</Link>
-            </li>
-
-            <li>
               <Link href="/catalogue">Catalogue</Link>
-            </li>
-
-            <li>
-              <Link href="/cart">Cart</Link>
             </li>
 
             <li>

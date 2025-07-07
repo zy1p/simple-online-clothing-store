@@ -5,7 +5,7 @@ import type products from "@/../public/products.json";
 export type Product = Pick<(typeof products)[number], "_id" | "name" | "price">;
 
 type CartStore = {
-  items: Map<string, number>;
+  items: Record<string, number>;
   addItem: (item: Product) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
@@ -15,25 +15,23 @@ type CartStore = {
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
-      items: new Map<string, number>(),
-      addItem: (item) => {
-        const items = get().items;
-        items.set(item._id, (items.get(item._id) ?? 0) + 1);
-        set({ items });
-      },
-      removeItem: (id) => {
-        const items = get().items;
-        items.delete(id);
-        set({ items });
-      },
-      clearCart: () => set({ items: new Map<string, number>() }),
-      getItemsCount: () => {
-        const items = get().items;
-        return Array.from(items.values()).reduce(
-          (acc, count) => acc + count,
-          0,
-        );
-      },
+      items: {},
+      addItem: (item) =>
+        set((state) => ({
+          items: {
+            ...state.items,
+            [item._id]: (state.items[item._id] ?? 0) + 1,
+          },
+        })),
+      removeItem: (id) =>
+        set((state) => {
+          const newItems = { ...state.items };
+          delete newItems[id];
+          return { items: newItems };
+        }),
+      clearCart: () => set({ items: {} }),
+      getItemsCount: () =>
+        Object.values(get().items).reduce((total, count) => total + count, 0),
     }),
 
     {
