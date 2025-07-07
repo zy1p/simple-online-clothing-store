@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardAction,
@@ -14,6 +15,8 @@ import { Separator } from "./ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import { useCartStore } from "@/hooks/use-cart-store";
+import { toast } from "sonner";
 
 type ProductCardProps = {
   _id: string;
@@ -32,6 +35,8 @@ export function ProductCard({
   imageUrl,
   category,
 }: ProductCardProps) {
+  const { addItem } = useCartStore();
+
   return (
     <HoverCard>
       <HoverCardTrigger>
@@ -59,7 +64,16 @@ export function ProductCard({
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant={"secondary"} size={"icon"}>
+                <Button
+                  variant={"secondary"}
+                  size={"icon"}
+                  onClick={() => {
+                    addItem({ _id, name, price });
+                    toast.success(`${name} added to cart`, {
+                      duration: 2000,
+                    });
+                  }}
+                >
                   <ShoppingCart />
                 </Button>
               </TooltipTrigger>

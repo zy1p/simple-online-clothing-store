@@ -9,6 +9,7 @@ type CartStore = {
   addItem: (item: Product) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
+  getItemsCount: () => number;
 };
 
 export const useCartStore = create<CartStore>()(
@@ -26,7 +27,15 @@ export const useCartStore = create<CartStore>()(
         set({ items });
       },
       clearCart: () => set({ items: new Map<string, number>() }),
+      getItemsCount: () => {
+        const items = get().items;
+        return Array.from(items.values()).reduce(
+          (acc, count) => acc + count,
+          0,
+        );
+      },
     }),
+
     {
       name: "cart-storage",
     },
