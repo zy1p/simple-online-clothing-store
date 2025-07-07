@@ -6,7 +6,7 @@ export default function SiteHeader() {
   return (
     <div className="flex h-16 items-center justify-between border-b p-4">
       <nav>
-        <ul className="flex flex-row gap-4">
+        <ul className="hidden flex-row gap-4 md:flex">
           <li>
             <Link href="/product">Product</Link>
           </li>
