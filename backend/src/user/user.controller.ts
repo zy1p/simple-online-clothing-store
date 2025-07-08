@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +21,7 @@ import {
   UpdateUserDto,
 } from './user.dto';
 import { UserService } from './user.service';
+import { Response } from 'express';
 
 @Controller('users')
 export class UserController {
@@ -34,8 +36,17 @@ export class UserController {
     type: LoginResponseDto,
   })
   @Post('login')
-  login(@Body() dto: LoginDto) {
-    return this.userService.login(dto);
+  async login(@Body() dto: LoginDto, @Res() res: Response) {
+    const ret = await this.userService.login(dto);
+
+    res.cookie('access_token', ret.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: new Date(ret.exp * 1000),
+    });
+
+    res.status(200).json(ret);
   }
 
   @UseGuards(AuthGuard)

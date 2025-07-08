@@ -6,6 +6,7 @@ import { useAuthStore } from "../hooks/use-auth-store";
 export const api = axios.create({
   baseURL: env.NEXT_PUBLIC_API_BASE_URL,
   timeout: 1000,
+  withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });
 

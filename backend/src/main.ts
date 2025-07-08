@@ -1,9 +1,10 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ENV, Env } from '@lib/env';
-import { Logger } from 'nestjs-pino';
+import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
+import { Logger } from 'nestjs-pino';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -13,9 +14,11 @@ async function bootstrap() {
   const env = app.get<Env>(ENV);
   const logger = app.get(Logger);
   app.useLogger(logger);
-
-  app.setGlobalPrefix('api').enableCors({
+  app.use(cookieParser());
+  app.setGlobalPrefix('api');
+  app.enableCors({
     origin: ['http://localhost:3000'],
+    credentials: true,
   });
 
   const SWAGGER_PATH = 'docs';

@@ -10,12 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { compare, hash } from 'bcryptjs';
 import { z } from 'zod/v4';
-import {
-  CreateUserDto,
-  LoginDto,
-  LoginResponseDto,
-  UpdateUserDto,
-} from './user.dto';
+import { CreateUserDto, LoginDto, UpdateUserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -25,10 +20,7 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login({
-    usernameOrEmail,
-    password,
-  }: LoginDto): Promise<LoginResponseDto> {
+  async login({ usernameOrEmail, password }: LoginDto) {
     let user: User | null = null;
 
     if (z.email().safeParse(usernameOrEmail).success) {
