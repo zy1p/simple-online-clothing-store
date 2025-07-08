@@ -6,15 +6,7 @@ import { useAuthStore } from "../hooks/use-auth-store";
 export const api = axios.create({
   baseURL: env.NEXT_PUBLIC_API_BASE_URL,
   timeout: 1000,
-  headers: {
-    "Content-Type": "application/json",
-    Authorization:
-      typeof window === "undefined"
-        ? undefined
-        : useAuthStore.getState().isAuthenticated()
-          ? `Bearer ${useAuthStore.getState().access_token}`
-          : undefined,
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
 api.interceptors.request.use(
