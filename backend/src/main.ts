@@ -2,6 +2,7 @@ import { ENV, Env } from '@lib/env';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
@@ -15,6 +16,7 @@ async function bootstrap() {
   const logger = app.get(Logger);
   app.useLogger(logger);
   app.use(cookieParser());
+  app.use(compression());
   app.setGlobalPrefix('api');
   app.enableCors({
     origin: ['http://localhost:3000'],
