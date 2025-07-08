@@ -57,37 +57,38 @@ export function ProductCard({
               width={200}
               height={200}
             />
-            <CardAction></CardAction>
           </CardContent>
           <CardFooter className="justify-between">
             <p>$ {price.toFixed(2)}</p>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={"secondary"}
-                  size={"icon"}
-                  onClick={() => {
-                    addItem({ _id, name, price });
-                    toast.success(`${name} added to cart`, {
-                      duration: 2000,
-                    });
-                  }}
-                >
-                  <ShoppingCart />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Add to cart</p>
-              </TooltipContent>
-            </Tooltip>
+            <CardAction>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={"secondary"}
+                    size={"icon"}
+                    onClick={() => {
+                      addItem({ _id, name, price });
+                      toast.success(`${name} added to cart`, {
+                        duration: 2000,
+                      });
+                    }}
+                  >
+                    <ShoppingCart />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add to cart</p>
+                </TooltipContent>
+              </Tooltip>
+            </CardAction>
           </CardFooter>
         </Card>
       </HoverCardTrigger>
 
       <HoverCardContent className="text-center">
         <Button variant={"outline"} asChild>
-          <Link href={`/products/${_id}`}>View {name}</Link>
+          <Link href={`/product/${_id}`}>View {name}</Link>
         </Button>
       </HoverCardContent>
     </HoverCard>
