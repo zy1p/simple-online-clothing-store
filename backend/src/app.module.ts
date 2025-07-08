@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { CatchEverythingFilter } from './catch-everything';
 import { SaleController, SaleService } from './sale';
 import { UserController, UserService } from './user';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -22,6 +23,14 @@ import { UserController, UserService } from './user';
             ? { target: 'pino-pretty' }
             : undefined,
       },
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60_000,
+          limit: 100,
+        },
+      ],
     }),
     DbModule.forRoot(),
     DbModule.forFeature(User, Sale),
