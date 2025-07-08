@@ -1,35 +1,33 @@
-import Link from "next/link";
-import React from "react";
+"use client";
+import { usePathname } from "next/navigation";
+import { Cart } from "./cart";
 import { ModeToggle } from "./mode-toggle";
 import { Separator } from "./ui/separator";
-import { Cart } from "./cart";
+import { SidebarTrigger } from "./ui/sidebar";
 
 export default function SiteHeader() {
+  const pathname = usePathname();
+
   return (
-    <div className="min-h-16 border-b">
+    <header className="border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 min-h-16 border-b backdrop-blur-sm">
       <div className="container mx-auto flex h-16 items-center justify-between p-4">
-        <nav>
-          <ul className="hidden flex-row gap-4 md:flex">
-            <li>
-              <Link href="/catalogue">Catalogue</Link>
-            </li>
+        <div className="flex flex-1 items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator
+              orientation="vertical"
+              className="mr-2 data-[orientation=vertical]:h-4"
+            />
+            <span>{pathname}</span>
+          </div>
 
-            <li>
-              <Link href="/purchase-history">Purchase History</Link>
-            </li>
-
-            <li>
-              <Link href="/profile">Profile</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="flex items-center space-x-4 md:flex-1 md:justify-end">
-          <Cart />
-          <Separator orientation="vertical" className="min-h-4" />
-          <ModeToggle />
+          <div className="flex items-center space-x-4">
+            <Cart />
+            <Separator orientation="vertical" className="min-h-4" />
+            <ModeToggle />
+          </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
