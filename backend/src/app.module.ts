@@ -1,15 +1,16 @@
 import { DbModule, Sale, User } from '@lib/db';
 import { Env, ENV, EnvModule } from '@lib/env';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CatchEverythingFilter } from './catch-everything';
 import { SaleController, SaleService } from './sale';
 import { UserController, UserService } from './user';
-import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         },
       ],
     }),
+    CacheModule.register({ ttl: 50 }),
     DbModule.forRoot(),
     DbModule.forFeature(User, Sale),
     JwtModule.registerAsync({
@@ -48,6 +50,10 @@ import { ThrottlerModule } from '@nestjs/throttler';
     {
       provide: APP_FILTER,
       useClass: CatchEverythingFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
     },
     UserService,
     SaleService,
