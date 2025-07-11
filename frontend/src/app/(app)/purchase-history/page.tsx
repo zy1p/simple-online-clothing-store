@@ -1,7 +1,9 @@
-import React from 'react'
+import PurchaseHistoryCard from "@/components/purchase-history-card";
 
 export default function PurchaseHistoryPage() {
   return (
-    <div>PurchaseHistoryPage</div>
-  )
+    <div className="container mx-auto p-4">
+      <PurchaseHistoryCard />
+    </div>
+  );
 }

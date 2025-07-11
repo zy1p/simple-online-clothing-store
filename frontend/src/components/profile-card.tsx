@@ -15,7 +15,7 @@ import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
 export function ProfileCard() {
-  const { getUser, isAuthenticated } = useAuthStore();
+  const { getUser, isAuthenticated, clear } = useAuthStore();
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -26,6 +26,7 @@ export function ProfileCard() {
   const { data, isPending, isFetched } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
+    enabled: isAuthenticated(),
   });
 
   if (isPending) {
@@ -37,17 +38,24 @@ export function ProfileCard() {
       <CardHeader>
         <CardTitle>Profile details</CardTitle>
         <CardDescription>{data?.username}</CardDescription>
-        <CardAction className="self-center">
-          <Button variant={"ghost"} size={"sm"}>
-            Update profile
-          </Button>
-        </CardAction>
       </CardHeader>
       <CardContent>
         <pre>{JSON.stringify(data, null, 2)}</pre>
       </CardContent>
       <CardFooter>
-        <p>Card Footer</p>
+        <CardAction className="">
+          <Button variant={"ghost"} size={"sm"}>
+            Update profile
+          </Button>
+
+          <Button variant={"secondary"} size={"sm"} onClick={clear}>
+            Log out
+          </Button>
+
+          <Button variant={"destructive"} size={"sm"}>
+            Delete account
+          </Button>
+        </CardAction>
       </CardFooter>
     </Card>
   );
