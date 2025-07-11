@@ -14,7 +14,7 @@ import ImageWithFallback from "./image-with-fallback";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import { useCartStore } from "@/hooks/use-cart-store";
+import { useCartStore } from "@/stores/cart-store";
 
 type ProductDetail = {
   _id: string;

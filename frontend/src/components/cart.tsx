@@ -1,5 +1,5 @@
 "use client";
-import { useCartStore } from "@/hooks/use-cart-store";
+import { useCartStore } from "@/stores/cart-store";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";

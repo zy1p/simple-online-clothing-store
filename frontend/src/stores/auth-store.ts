@@ -1,3 +1,4 @@
+import type { User } from "@/../../backend/libs/db/src/model/user.model";
 import { create } from "zustand";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { api } from "../lib/axios";
@@ -12,6 +13,7 @@ type AuthStore = {
   login: (formData: FormData) => Promise<void>;
   getAccessToken: () => string;
   clear: () => void;
+  getUser: () => Promise<User | null>;
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -70,7 +72,14 @@ export const useAuthStore = create<AuthStore>()(
             exp,
           });
         },
+
+        getUser: async () => {
+          const { data: user } = await api.get<User>("/users/me");
+
+          return user;
+        },
       }),
+
       {
         name: "auth-storage",
       },

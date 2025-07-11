@@ -15,7 +15,7 @@ import { Separator } from "./ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import { useCartStore } from "@/hooks/use-cart-store";
+import { useCartStore } from "@/stores/cart-store";
 import { toast } from "sonner";
 
 type ProductCardProps = {

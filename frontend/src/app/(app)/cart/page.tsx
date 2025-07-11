@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useCartStore } from "@/hooks/use-cart-store";
+import { useCartStore } from "@/stores/cart-store";
 import { useEffect, useState } from "react";
 export default function CartPage() {
   const { clearCart, getItemsCount } = useCartStore();
