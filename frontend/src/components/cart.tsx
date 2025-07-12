@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 export function Cart() {
   const [isClient, setIsClient] = useState(false);
@@ -15,9 +16,9 @@ export function Cart() {
 
   const { getItemsCount } = useCartStore();
 
-  return (
-    <Button asChild variant={"outline"} size={"icon"} className="relative">
-      {isClient && (
+  if (isClient && useCartStore.persist.hasHydrated())
+    return (
+      <Button asChild variant={"outline"} size={"icon"} className="relative">
         <Link href="/cart">
           <ShoppingCart />
           {getItemsCount() > 0 && (
@@ -29,7 +30,8 @@ export function Cart() {
             </Badge>
           )}
         </Link>
-      )}
-    </Button>
-  );
+      </Button>
+    );
+
+  return <Skeleton className="size-9" />;
 }
