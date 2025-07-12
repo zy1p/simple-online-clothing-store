@@ -9,8 +9,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useCartStore } from "@/stores/cart-store";
+import autoAnimate from "@formkit/auto-animate";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CartCardItem } from "./cart-card-item";
 import { Skeleton } from "./ui/skeleton";
 
@@ -21,6 +22,11 @@ export function CartCard() {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const parent = useRef(null);
+  useEffect(() => {
+    if (parent.current) autoAnimate(parent.current);
+  }, [parent]);
 
   return (
     <Card className="mx-auto max-w-4xl">
@@ -54,7 +60,7 @@ export function CartCard() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-4">
+        <div ref={parent} className="flex flex-col gap-4">
           {isClient && useCartStore.persist.hasHydrated() ? (
             getItemsCount() > 0 ? (
               Object.entries(useCartStore.getState().items).map(
