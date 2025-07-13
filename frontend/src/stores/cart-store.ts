@@ -7,7 +7,7 @@ export type Product = Pick<(typeof products)[number], "_id" | "name" | "price">;
 
 type CartStore = {
   items: Record<string, number>;
-  addItem: (item: Product) => void;
+  addItem: (item: Product, quantity?: number) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
   getItemsCount: () => number;
@@ -18,11 +18,11 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: {},
-      addItem: (item) =>
+      addItem: (item, quantity = 1) =>
         set((state) => ({
           items: {
             ...state.items,
-            [item._id]: (state.items[item._id] ?? 0) + 1,
+            [item._id]: (state.items[item._id] ?? 0) + quantity,
           },
         })),
       removeItem: (id) =>

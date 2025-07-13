@@ -8,13 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ShoppingCart } from "lucide-react";
+import { Circle, CircleMinus, CirclePlus, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import ImageWithFallback from "./image-with-fallback";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useCartStore } from "@/stores/cart-store";
+import { Input } from "./ui/input";
+import { useState } from "react";
 
 type ProductDetail = {
   _id: string;
@@ -34,18 +36,11 @@ export default function ProductDetail({
   category,
 }: ProductDetail) {
   const { addItem } = useCartStore();
+  const [quantity, setQuantity] = useState(1);
 
   return (
     <Card className="h-full">
-      <CardHeader>
-        <CardTitle>{name}</CardTitle>
-        <CardDescription className="space-y-2">
-          <p className="text-muted-foreground/70">{category}</p>
-          <Separator />
-          <p className="h-16">{description}</p>
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="grid grid-cols-2 gap-4">
         <ImageWithFallback
           className="mx-auto"
           src={imageUrl}
@@ -53,18 +48,51 @@ export default function ProductDetail({
           width={500}
           height={500}
         />
-      </CardContent>
-      <CardFooter className="justify-between">
-        <p>$ {price.toFixed(2)}</p>
 
-        <CardAction>
+        <div className="flex h-full flex-col">
+          <CardTitle>{name}</CardTitle>
+          <CardDescription className="flex flex-1 flex-col space-y-2">
+            <p className="text-muted-foreground/70">{category}</p>
+            <Separator />
+            <div className="h-16 flex-auto">{description}</div>
+            <p className="place-self-end">$ {price.toFixed(2)}</p>
+          </CardDescription>
+        </div>
+      </CardContent>
+      <CardFooter className="justify-end">
+        <CardAction className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+            >
+              <CircleMinus />
+            </Button>
+
+            <Input
+              value={quantity}
+              min={1}
+              className="field-sizing-content tabular-nums"
+              disabled
+            />
+
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              onClick={() => setQuantity((q) => q + 1)}
+            >
+              <CirclePlus />
+            </Button>
+          </div>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant={"secondary"}
                 size={"icon"}
                 onClick={() => {
-                  addItem({ _id, name, price });
+                  addItem({ _id, name, price }, quantity);
                   toast.success(`${name} added to cart`, {
                     duration: 2000,
                   });
