@@ -24,7 +24,7 @@ import {
 import { useState } from "react";
 import { DataTableViewOptions } from "./data-table-view-options";
 import { DataTablePagination } from "./data-table-pagination";
-import { DataTableFilter } from "./data-table-filter";
+import PurchaseHistoryDataTableDateRangeFilter from "./purchase-history-data-table-date-range-filter";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,7 +36,12 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
+    {
+      id: "saleDate",
+      value: [undefined, new Date()] as [Date | undefined, Date],
+    },
+  ]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
   });
@@ -62,6 +67,10 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4">
       <div className="flex items-center">
         <DataTableViewOptions table={table} />
+      </div>
+
+      <div className="flex items-center">
+        <PurchaseHistoryDataTableDateRangeFilter table={table} />
       </div>
 
       <div className="rounded-md border">

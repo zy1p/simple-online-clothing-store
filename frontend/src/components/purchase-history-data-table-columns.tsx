@@ -3,7 +3,7 @@
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 
 import type { Sale } from "@/../../backend/libs/db/src/model/sale.model";
-import { format } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 import { DataTableColumnHeader } from "./data-table-column-header";
 
 const columnHelper = createColumnHelper<Sale>();
@@ -18,6 +18,21 @@ export const columns = [
         {format(props.getValue(), "PP HH:mm aaaa")}
       </span>
     ),
+    filterFn: (
+      row,
+      columnId,
+      filterValue: [Date | undefined, Date | undefined],
+    ) => {
+      const value = row.getValue<string>(columnId);
+      const from = filterValue[0];
+      const to = filterValue[1];
+
+      if (from && to) return isBefore(value, to) && isAfter(value, from);
+      if (from && !to) return isAfter(value, from);
+      if (!from && to) return isBefore(value, to);
+
+      return true;
+    },
   }),
   columnHelper.accessor("totalPrice", {
     header: ({ column }) => (
