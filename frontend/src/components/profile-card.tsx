@@ -1,62 +1,26 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@/stores/auth-store";
-import { useQuery } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ProfileForm } from "./profile-form";
 
 export function ProfileCard() {
-  const { getUser, isAuthenticated, clear } = useAuthStore();
+  const { getUser, isAuthenticated, clear, deleteUser, updateProfile } =
+    useAuthStore();
 
+  const [isStoreHydrated, setIsStoreHydrated] = useState(false);
   useEffect(() => {
-    if (!isAuthenticated()) {
-      redirect("/login");
-    }
-  }, [isAuthenticated]);
-
-  const { data, isPending, isFetched } = useQuery({
-    queryKey: ["user"],
-    queryFn: getUser,
-    enabled: isAuthenticated(),
-  });
-
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
+    if (useAuthStore.persist.hasHydrated()) setIsStoreHydrated(true);
+  }, []);
 
   return (
-    <Card>
+    <Card className="mx-auto max-w-lg">
       <CardHeader>
         <CardTitle>Profile details</CardTitle>
-        <CardDescription>{data?.username}</CardDescription>
       </CardHeader>
       <CardContent>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+        <ProfileForm />
       </CardContent>
-      <CardFooter>
-        <CardAction className="">
-          <Button variant={"ghost"} size={"sm"}>
-            Update profile
-          </Button>
-
-          <Button variant={"secondary"} size={"sm"} onClick={clear}>
-            Log out
-          </Button>
-
-          <Button variant={"destructive"} size={"sm"}>
-            Delete account
-          </Button>
-        </CardAction>
-      </CardFooter>
     </Card>
   );
 }

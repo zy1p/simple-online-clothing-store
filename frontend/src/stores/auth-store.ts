@@ -12,9 +12,13 @@ type AuthStore = {
   isAuthenticated: () => boolean;
   signup: (data: z.infer<typeof signupFormSchema>) => Promise<boolean>;
   login: (data: z.infer<typeof loginFormSchema>) => Promise<void>;
+  updateProfile: (
+    data: z.infer<typeof updateProfileFormSchema>,
+  ) => Promise<void>;
   getAccessToken: () => string;
   clear: () => void;
-  getUser: () => Promise<User | null>;
+  getUser: () => Promise<User>;
+  deleteUser: () => Promise<void>;
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -68,6 +72,15 @@ export const useAuthStore = create<AuthStore>()(
           });
         },
 
+        updateProfile: async (dto) => {
+          await api.put<User>(`/users/${get().sub}`, dto);
+        },
+
+        deleteUser: async () => {
+          await api.delete(`/users/${get().sub}`);
+          get().clear();
+        },
+
         getUser: async () => {
           const { data: user } = await api.get<User>("/users/me");
 
@@ -92,25 +105,56 @@ export const loginFormSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters long" })
-    .max(20, { message: "Password must be at most 20 characters long" })
+    .min(8, { error: "Password must be at least 8 characters long" })
+    .max(20, { error: "Password must be at most 20 characters long" })
     .refine((password) => /[A-Z]/.test(password), {
-      message: "Password must contain at least one uppercase letter",
+      error: "Password must contain at least one uppercase letter",
     })
     .refine((password) => /[a-z]/.test(password), {
-      message: "Password must contain at least one lowercase letter",
+      error: "Password must contain at least one lowercase letter",
     })
     .refine((password) => /[0-9]/.test(password), {
-      message: "Password must contain at least one number",
+      error: "Password must contain at least one number",
     })
     .refine(
       (password) => /[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/.test(password),
       {
-        message: "Password must contain at least one special character",
+        error: "Password must contain at least one special character",
       },
     ),
 });
 
 export const signupFormSchema = loginFormSchema.extend({
   email: z.email(),
+});
+
+export const updateProfileFormSchema = signupFormSchema.partial().extend({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  address: z.string().optional(),
+  phoneNumber: z
+    .e164({ error: "Invalid phone number" })
+    .optional()
+    .or(z.literal("")),
+  password: z
+    .string()
+    .min(8, { error: "Password must be at least 8 characters long" })
+    .max(20, { error: "Password must be at most 20 characters long" })
+    .refine((password) => /[A-Z]/.test(password), {
+      error: "Password must contain at least one uppercase letter",
+    })
+    .refine((password) => /[a-z]/.test(password), {
+      error: "Password must contain at least one lowercase letter",
+    })
+    .refine((password) => /[0-9]/.test(password), {
+      error: "Password must contain at least one number",
+    })
+    .refine(
+      (password) => /[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/.test(password),
+      {
+        error: "Password must contain at least one special character",
+      },
+    )
+    .or(z.literal(""))
+    .optional(),
 });
