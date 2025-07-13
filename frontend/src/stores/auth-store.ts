@@ -1,4 +1,5 @@
 import type { User } from "@/../../backend/libs/db/src/model/user.model";
+import { z } from "zod/v4";
 import { create } from "zustand";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { api } from "../lib/axios";
@@ -10,7 +11,7 @@ type AuthStore = {
   isExpired: () => boolean;
   isAuthenticated: () => boolean;
   signup: (formData: FormData) => Promise<boolean>;
-  login: (formData: FormData) => Promise<void>;
+  login: (data: z.infer<typeof loginFormSchema>) => Promise<void>;
   getAccessToken: () => string;
   clear: () => void;
   getUser: () => Promise<User | null>;
@@ -51,10 +52,10 @@ export const useAuthStore = create<AuthStore>()(
           return success;
         },
 
-        login: async (formData) => {
+        login: async ({ username, password }) => {
           const dto = {
-            usernameOrEmail: formData.get("username"),
-            password: formData.get("password"),
+            usernameOrEmail: username,
+            password,
           };
 
           const {
@@ -92,3 +93,26 @@ useAuthStore.subscribe(
   (access_token) =>
     (api.defaults.headers.common.Authorization = `Bearer ${access_token}`),
 );
+
+export const loginFormSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long" })
+    .max(20, { message: "Password must be at most 20 characters long" })
+    .refine((password) => /[A-Z]/.test(password), {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .refine((password) => /[a-z]/.test(password), {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .refine((password) => /[0-9]/.test(password), {
+      message: "Password must contain at least one number",
+    })
+    .refine(
+      (password) => /[ !"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/.test(password),
+      {
+        message: "Password must contain at least one special character",
+      },
+    ),
+});
