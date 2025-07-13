@@ -135,15 +135,7 @@ export function SignupForm({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center">
-                      <FormLabel>Password</FormLabel>
-                      <a
-                        href="#"
-                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                      >
-                        Forgot your password?
-                      </a>
-                    </div>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="••••••••"
