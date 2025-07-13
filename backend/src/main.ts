@@ -35,7 +35,7 @@ async function bootstrap() {
     swaggerOptions: {
       // @see https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/#parameters
       persistAuthorization: true,
-      defaultModelsExpandDepth: 3,
+      defaultModelsExpandDepth: 4,
     },
   });
 

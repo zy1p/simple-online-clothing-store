@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type products from "@/../public/products.json";
+import products from "@/../public/products.json";
+import { api } from "@/lib/axios";
 
 export type Product = Pick<(typeof products)[number], "_id" | "name" | "price">;
 
@@ -10,6 +11,7 @@ type CartStore = {
   removeItem: (id: string) => void;
   clearCart: () => void;
   getItemsCount: () => number;
+  checkOut: () => Promise<void>;
 };
 
 export const useCartStore = create<CartStore>()(
@@ -32,6 +34,22 @@ export const useCartStore = create<CartStore>()(
       clearCart: () => set({ items: {} }),
       getItemsCount: () =>
         Object.values(get().items).reduce((total, count) => total + count, 0),
+      checkOut: async () => {
+        const items = Object.entries(get().items).map(([id, quantity]) => {
+          const product = products.find((p) => p._id === id);
+
+          return {
+            productId: id,
+            name: product?.name,
+            price: product?.price,
+            quantity,
+          };
+        });
+
+        await api.post("/sales", {
+          products: items,
+        });
+      },
     }),
 
     {

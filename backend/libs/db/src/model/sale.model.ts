@@ -1,20 +1,35 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { modelOptions, prop, Ref } from '@typegoose/typegoose';
-import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { User } from './user.model';
+
+export class Product {
+  @ApiProperty()
+  @prop({ required: true })
+  productId: string;
+
+  @ApiProperty()
+  @prop({ required: true })
+  name: string;
+
+  @ApiProperty()
+  @prop({ required: true })
+  price: number;
+
+  @ApiProperty()
+  @prop({ required: true })
+  quantity: number;
+}
 
 @modelOptions({})
 export class Sale {
   @prop({
     required: true,
     ref: () => User,
-    type: () => String,
-    localField: 'userId',
-    foreignField: '_id',
   })
   userId: Ref<User>;
 
-  @prop({ required: true })
-  products: string;
+  @prop({ required: true, type: () => [Product], _id: false })
+  products: Product[];
 
   @prop({ required: true })
   totalPrice: number;
