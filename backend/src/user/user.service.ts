@@ -61,11 +61,11 @@ export class UserService {
     const { password, ...rest } = userSchema.parse(data);
 
     // Hash the password before saving
-    const hashedpassword = await hash(password, 10);
+    const hashedPassword = await hash(password, 10);
 
     await this.userModel.create({
       ...rest,
-      password: hashedpassword,
+      password: hashedPassword,
     });
 
     return true;
