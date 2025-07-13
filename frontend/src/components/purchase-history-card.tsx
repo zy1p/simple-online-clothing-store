@@ -4,6 +4,8 @@ import { api } from "@/lib/axios";
 import { useAuthStore } from "@/stores/auth-store";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { DataTable } from "./purchase-history-data-table";
+import { columns } from "./purchase-history-data-table-columns";
 
 export default function PurchaseHistoryCard() {
   const { isAuthenticated, sub } = useAuthStore();
@@ -24,9 +26,9 @@ export default function PurchaseHistoryCard() {
     setIsClient(true);
   }, []);
 
-  if (isFetching) {
-    return <div>Loading...</div>;
-  }
-
-  return <div>{isClient && <pre>{JSON.stringify(data, null, 2)}</pre>}</div>;
+  return (
+    <div className="container mx-auto">
+      <DataTable columns={columns} data={data ?? []} />
+    </div>
+  );
 }
