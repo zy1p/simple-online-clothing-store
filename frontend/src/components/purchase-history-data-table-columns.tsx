@@ -38,6 +38,31 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Total Price" />
     ),
+    filterFn: (
+      row,
+      columnId,
+      filterValue: [string, "ge" | "lt" | "gte" | "lte" | "eq" | undefined],
+    ) => {
+      const [value, op] = filterValue;
+      const rowValue = row.getValue<number>(columnId);
+
+      if (value === "") return true;
+
+      switch (op) {
+        case "ge":
+          return rowValue >= parseFloat(value);
+        case "lt":
+          return rowValue < parseFloat(value);
+        case "gte":
+          return rowValue >= parseFloat(value);
+        case "lte":
+          return rowValue <= parseFloat(value);
+        case "eq":
+          return rowValue === parseFloat(value);
+        default:
+          return rowValue.toString().includes(value);
+      }
+    },
   }),
   columnHelper.accessor("products", {
     header: ({ column }) => (

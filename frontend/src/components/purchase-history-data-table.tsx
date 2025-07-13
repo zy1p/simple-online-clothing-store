@@ -25,6 +25,7 @@ import { useState } from "react";
 import { DataTableViewOptions } from "./data-table-view-options";
 import { DataTablePagination } from "./data-table-pagination";
 import PurchaseHistoryDataTableDateRangeFilter from "./purchase-history-data-table-date-range-filter";
+import PurchaseHistoryDataTableTotalPriceFilter from "./purchase-history-data-table-total-price-filter";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,6 +41,10 @@ export function DataTable<TData, TValue>({
     {
       id: "saleDate",
       value: [undefined, new Date()] as [Date | undefined, Date],
+    },
+    {
+      id: "totalPrice",
+      value: ["", ""],
     },
   ]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -69,9 +74,9 @@ export function DataTable<TData, TValue>({
         <DataTableViewOptions table={table} />
       </div>
 
-      <div className="flex items-center">
-        <PurchaseHistoryDataTableDateRangeFilter table={table} />
-      </div>
+      <PurchaseHistoryDataTableDateRangeFilter table={table} />
+
+      <PurchaseHistoryDataTableTotalPriceFilter table={table} />
 
       <div className="rounded-md border">
         <Table>
