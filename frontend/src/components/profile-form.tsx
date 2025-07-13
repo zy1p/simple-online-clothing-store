@@ -264,7 +264,7 @@ export function ProfileForm() {
               {updateProfileMutation.isPending ? (
                 <Loader2Icon className="animate-spin" />
               ) : (
-                "Save"
+                "Save Changes"
               )}
             </Button>
           ) : (
