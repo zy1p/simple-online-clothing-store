@@ -22,7 +22,8 @@ import { CartCardItem } from "./cart-card-item";
 import { Skeleton } from "./ui/skeleton";
 
 export function CartCard() {
-  const { clearCart, getItemsCount, checkOut } = useCartStore();
+  const { clearCart, getItemsCount, checkOut, calculateTotalPrice } =
+    useCartStore();
   const { isAuthenticated } = useAuthStore();
   const queryClient = useQueryClient();
 
@@ -145,7 +146,14 @@ export function CartCard() {
           </div>
         </CardAction>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        <div className="text-right tabular-nums">
+          Total Price:
+          <span className="inline-block min-w-20">
+            $ {isStoreHydrated ? calculateTotalPrice() : 0}
+          </span>
+        </div>
+
         <div ref={parent} className="flex flex-col gap-4">
           {isStoreHydrated ? (
             getItemsCount() > 0 ? (

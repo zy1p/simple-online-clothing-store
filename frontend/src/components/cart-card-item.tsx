@@ -26,18 +26,18 @@ export function CartCardItem({ _id, quantity }: CartItemProps) {
   if (product)
     return (
       <Card className="mx-auto w-full max-w-2xl">
-        <CardContent className="flex flex-col items-center gap-4 md:flex-row">
+        <CardContent className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2">
           <ImageWithFallback
             src={product.imageUrl}
             alt={product.name}
             height={200}
             width={200}
-            className="size-50"
+            className="size-50 justify-self-start"
           />
 
-          <div className="w-full max-w-128 space-y-2">
+          <div className="flex w-full max-w-128 flex-col space-y-2">
             <CardTitle>{product.name}</CardTitle>
-            <CardDescription className="h-16">
+            <CardDescription className="h-16 flex-1">
               {product.description}
             </CardDescription>
 
@@ -48,7 +48,7 @@ export function CartCardItem({ _id, quantity }: CartItemProps) {
               </div>
             </div>
 
-            <CardAction className="justify-end">
+            <CardAction className="ml-auto">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button

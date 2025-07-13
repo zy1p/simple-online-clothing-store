@@ -12,6 +12,7 @@ type CartStore = {
   clearCart: () => void;
   getItemsCount: () => number;
   checkOut: () => Promise<void>;
+  calculateTotalPrice: () => string;
 };
 
 export const useCartStore = create<CartStore>()(
@@ -50,6 +51,14 @@ export const useCartStore = create<CartStore>()(
           products: items,
         });
       },
+      calculateTotalPrice: () => {
+        let total = 0;
+        for (const [id, quantity] of Object.entries(get().items)) {
+          const product = findProductById(id);
+          total += (product?.price ?? 0) * quantity;
+        }
+        return total.toFixed(2);
+      },
     }),
 
     {
@@ -57,3 +66,11 @@ export const useCartStore = create<CartStore>()(
     },
   ),
 );
+
+function findProductById(id: string): Product | undefined {
+  for (const product of products) {
+    if (product._id === id) {
+      return product;
+    }
+  }
+}
