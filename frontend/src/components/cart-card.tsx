@@ -8,9 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useAuthStore } from "@/stores/auth-store";
 import { useCartStore } from "@/stores/cart-store";
 import autoAnimate from "@formkit/auto-animate";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Loader2Icon } from "lucide-react";
 import Link from "next/link";
@@ -22,6 +23,8 @@ import { Skeleton } from "./ui/skeleton";
 
 export function CartCard() {
   const { clearCart, getItemsCount, checkOut } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
+  const queryClient = useQueryClient();
 
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
@@ -30,7 +33,11 @@ export function CartCard() {
 
   const [isStoreHydrated, setIsStoreHydrated] = useState(false);
   useEffect(() => {
-    if (isClient && useCartStore.persist.hasHydrated())
+    if (
+      isClient &&
+      useCartStore.persist.hasHydrated() &&
+      useAuthStore.persist.hasHydrated()
+    )
       setIsStoreHydrated(true);
   }, [isClient]);
 
@@ -52,18 +59,20 @@ export function CartCard() {
         { id: "checkout" },
       );
     },
-    onSuccess: () => {
-      // clearCart();
+    onSuccess: async () => {
+      clearCart();
       toast.success("Checked out successfully", {
         id: "checkout",
         action: {
-          label: "Undo",
+          label: "Check Purchase History",
           onClick: () => {
             toast.dismiss("checkout");
             redirect("/purchase-history");
           },
         },
       });
+
+      await queryClient.invalidateQueries({ queryKey: ["purchase-history"] });
     },
   });
 
@@ -74,7 +83,21 @@ export function CartCard() {
         <CardDescription>
           {isStoreHydrated ? (
             getItemsCount() > 0 ? (
-              <p>You have {getItemsCount()} items in your cart.</p>
+              <p>
+                You have {getItemsCount()} items in your cart.
+                {!isAuthenticated() && (
+                  <span className="inline-block">
+                    Please{" "}
+                    <Link
+                      href="/login"
+                      className="text-muted-foreground/80 hover:text-muted-foreground underline"
+                    >
+                      log in
+                    </Link>{" "}
+                    to proceed to checkout.
+                  </span>
+                )}
+              </p>
             ) : (
               <p>Your cart is empty.</p>
             )
@@ -103,8 +126,10 @@ export function CartCard() {
                 size={"sm"}
                 className="w-24"
                 disabled={
-                  (isStoreHydrated && getItemsCount() === 0) ||
-                  checkOutMutation.isPending
+                  isStoreHydrated &&
+                  (!isAuthenticated() ||
+                    getItemsCount() === 0 ||
+                    checkOutMutation.isPending)
                 }
                 onClick={() => checkOutMutation.mutate()}
               >
