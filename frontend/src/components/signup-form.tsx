@@ -8,28 +8,31 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useAuthStore } from "@/stores/auth-store";
 import { cn } from "@/lib/utils";
+import { signupFormSchema, useAuthStore } from "@/stores/auth-store";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Loader2Icon } from "lucide-react";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import type { z } from "zod/v4";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { login, signup, isAuthenticated } = useAuthStore();
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      redirect("/catalogue");
-    }
-  }, [isAuthenticated]);
+  const { login, signup } = useAuthStore();
 
   const loginMutation = useMutation({
     mutationKey: ["login"],
@@ -74,6 +77,18 @@ export function SignupForm({
     },
   });
 
+  const form = useForm<z.infer<typeof signupFormSchema>>({
+    resolver: zodResolver(signupFormSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
+  function onSubmit(values: z.infer<typeof signupFormSchema>) {
+    signupMutation.mutate(values);
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -84,53 +99,76 @@ export function SignupForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              signupMutation.mutate(new FormData(e.currentTarget));
-            }}
-          >
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  name="email"
-                  id="email"
-                  type="email"
-                  placeholder="zy1p@example.com"
-                  required
-                />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  name="username"
-                  id="username"
-                  type="text"
-                  placeholder="zy1p"
-                  required
-                />
-              </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
-                <Input name="password" id="password" type="password" required />
-              </div>
-              <div className="flex flex-col gap-3">
-                {loginMutation.isPending ? (
-                  <Button disabled>
-                    <Loader2Icon className="animate-spin" />
-                    Please wait
-                  </Button>
-                ) : (
-                  <Button type="submit" className="w-full">
-                    Sign up
-                  </Button>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </div>
-            </div>
-          </form>
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center">
+                      <FormLabel>Password</FormLabel>
+                      <a
+                        href="#"
+                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                      >
+                        Forgot your password?
+                      </a>
+                    </div>
+                    <FormControl>
+                      <Input
+                        placeholder="••••••••"
+                        type="password"
+                        {...field}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {loginMutation.isPending ? (
+                <Button disabled>
+                  <Loader2Icon className="w-full animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button type="submit" className="w-full">
+                  Sign up
+                </Button>
+              )}
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

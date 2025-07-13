@@ -10,7 +10,7 @@ type AuthStore = {
   exp: number;
   isExpired: () => boolean;
   isAuthenticated: () => boolean;
-  signup: (formData: FormData) => Promise<boolean>;
+  signup: (data: z.infer<typeof signupFormSchema>) => Promise<boolean>;
   login: (data: z.infer<typeof loginFormSchema>) => Promise<void>;
   getAccessToken: () => string;
   clear: () => void;
@@ -37,13 +37,7 @@ export const useAuthStore = create<AuthStore>()(
           return get().access_token;
         },
 
-        signup: async (formData) => {
-          const dto = {
-            username: formData.get("username"),
-            email: formData.get("email"),
-            password: formData.get("password"),
-          };
-
+        signup: async (dto) => {
           const { data: success } = await api.post<boolean>(
             "/users/signup",
             dto,
@@ -115,4 +109,8 @@ export const loginFormSchema = z.object({
         message: "Password must contain at least one special character",
       },
     ),
+});
+
+export const signupFormSchema = loginFormSchema.extend({
+  email: z.email(),
 });
