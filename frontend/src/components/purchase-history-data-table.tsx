@@ -21,12 +21,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataTableViewOptions } from "./data-table-view-options";
 import { DataTablePagination } from "./data-table-pagination";
 import PurchaseHistoryDataTableDateRangeFilter from "./purchase-history-data-table-date-range-filter";
 import PurchaseHistoryDataTableTotalPriceFilter from "./purchase-history-data-table-total-price-filter";
 import PurchaseHistoryDataTableProductFilter from "./purchase-history-data-table-product-filter";
+import autoAnimate from "@formkit/auto-animate";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -69,6 +70,11 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const parent = useRef(null);
+  useEffect(() => {
+    if (parent.current) autoAnimate(parent.current);
+  }, [parent]);
+
   return (
     <div className="space-y-4">
       <div className="flex items-center">
@@ -101,7 +107,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody ref={parent}>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
