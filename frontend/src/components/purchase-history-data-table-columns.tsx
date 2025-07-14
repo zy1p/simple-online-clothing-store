@@ -78,5 +78,18 @@ export const columns = [
         ))}
       </ul>
     ),
+
+    filterFn: (row, columnId, filterValue: string) => {
+      const value = row.getValue<Sale["products"]>(columnId);
+      filterValue = filterValue.toLowerCase();
+
+      if (filterValue.trim() === "") return true;
+
+      for (const product of value) {
+        if (product.name.toLowerCase().includes(filterValue)) return true;
+      }
+
+      return false;
+    },
   }),
 ] as ColumnDef<Sale>[];

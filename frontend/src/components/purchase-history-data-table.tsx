@@ -26,6 +26,7 @@ import { DataTableViewOptions } from "./data-table-view-options";
 import { DataTablePagination } from "./data-table-pagination";
 import PurchaseHistoryDataTableDateRangeFilter from "./purchase-history-data-table-date-range-filter";
 import PurchaseHistoryDataTableTotalPriceFilter from "./purchase-history-data-table-total-price-filter";
+import PurchaseHistoryDataTableProductFilter from "./purchase-history-data-table-product-filter";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -77,6 +78,8 @@ export function DataTable<TData, TValue>({
       <PurchaseHistoryDataTableDateRangeFilter table={table} />
 
       <PurchaseHistoryDataTableTotalPriceFilter table={table} />
+
+      <PurchaseHistoryDataTableProductFilter table={table} />
 
       <div className="rounded-md border">
         <Table>
