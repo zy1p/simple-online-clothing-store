@@ -11,6 +11,10 @@
 1. Clone the repository
 2. Open the project in Visual Studio Code
 3. Run Dev Containers: Reopen in Container
+4. Follow the setup instructions below
+5. You can visit mongo-express at [http://localhost:8081](http://localhost:8081) to manage MongoDB database.
+6. You can visit the frontend at [http://localhost:3000](http://localhost:3000) to view the application.
+7. You can visit the backend at [http://localhost:3001/docs](http://localhost:3001/docs) to view the API documentation.
 
 ## Backend Setup
 
