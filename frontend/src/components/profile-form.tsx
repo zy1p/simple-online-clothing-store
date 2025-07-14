@@ -256,6 +256,24 @@ export function ProfileForm() {
 
           {isStoreHydrated ? (
             <Button
+              size="sm"
+              variant={"outline"}
+              className=""
+              disabled={!isAuthenticated()}
+              onClick={async () => {
+                clear();
+                await queryClient.invalidateQueries({ queryKey: ["user"] });
+                redirect("/");
+              }}
+            >
+              Log Out
+            </Button>
+          ) : (
+            <Skeleton className="h-8 w-14" />
+          )}
+
+          {isStoreHydrated ? (
+            <Button
               type="submit"
               size="sm"
               className=""
