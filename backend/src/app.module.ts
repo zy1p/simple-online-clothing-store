@@ -1,4 +1,4 @@
-import { DbModule, Sale, User } from '@lib/db';
+import { DbModule } from '@lib/db';
 import { Env, ENV, EnvModule } from '@lib/env';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
@@ -9,8 +9,8 @@ import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CatchEverythingFilter } from './catch-everything';
-import { SaleController, SaleService } from './sale';
-import { UserController, UserService } from './user';
+import { SaleModule } from './sale/sale.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -34,17 +34,19 @@ import { UserController, UserService } from './user';
       ],
     }),
     CacheModule.register({ ttl: 50 }),
-    DbModule.forRoot(),
-    DbModule.forFeature(User, Sale),
     JwtModule.registerAsync({
       inject: [ENV],
       useFactory: (env: Env) => ({
         secret: env.JWT_SECRET,
         signOptions: { expiresIn: '1d' },
       }),
+      global: true,
     }),
+    DbModule.forRoot(),
+    UserModule,
+    SaleModule,
   ],
-  controllers: [AppController, UserController, SaleController],
+  controllers: [AppController],
   providers: [
     AppService,
     {
@@ -55,8 +57,6 @@ import { UserController, UserService } from './user';
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
     },
-    UserService,
-    SaleService,
   ],
 })
 export class AppModule {}
